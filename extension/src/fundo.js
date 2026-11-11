@@ -74,6 +74,7 @@ async function novidadesRemotas(tag, v) {
 
 async function procurar() {
   const cur = atual();
+  if (ehFirefox()) return salvar({ procuradoEm: Date.now(), atual: cur, disponivel: false, urgente: false, zip: null, xpi: null, pagina: null, erro: null });
   const base = { procuradoEm: Date.now(), atual: cur, instalacao: await tipoInstalacao() };
   try {
     const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' });
@@ -95,6 +96,7 @@ async function procurar() {
 }
 
 async function aplicar() {
+  if (ehFirefox()) return { status: 'indisponivel' };
   const st = (await ext.storage.local.get('atualizacao')).atualizacao || {};
   if (await tipoInstalacao() === 'normal') {
     // Chrome: {status, version}; Firefox: {status, details}; versões antigas: [status, details]
@@ -139,7 +141,7 @@ ext.runtime.onMessage.addListener((msg, _sender, responder) => {
     // da página (abrir/voltar para a aba): só vai ao GitHub se a última procura for mais velha que o pedido
     const limite = Number(msg.seMaisVelhoQue) || 0;
     ext.storage.local.get('atualizacao').then(({ atualizacao: st = {} }) =>
-      (limite && st.procuradoEm && Date.now() - st.procuradoEm < limite && !st.erro ? st : procurar())).then(responder, () => responder(null));
+      ((!ehFirefox() || (!st.disponivel && !st.urgente && !st.zip && !st.xpi && !st.pagina)) && limite && st.procuradoEm && Date.now() - st.procuradoEm < limite && !st.erro ? st : procurar())).then(responder, () => responder(null));
     return true;
   }
   if (msg && msg.cmd === 'aplicarAtualizacao') { aplicar().then(responder, (e) => responder({ status: 'erro', erro: String((e && e.message) || e) })); return true; }

@@ -1,0 +1,3 @@
+# Firefox maintenance design
+
+Preserve upstream v0.9.4 Firefox compatibility in a community-maintained fork. Keep upstream attribution and existing functionality; isolate update and distribution identity. Upstream v0.9.5 removes Firefox and cannot be used as an update. Starting on v0.9.4 keeps existing compatibility; reapplying its removal commit to current upstream would add unnecessary changes today. Use a new add-on ID and disable upstream Firefox updates until a real fork and signing are configured. Temporary Firefox installation enables testing; signing and real account validation remain separate milestones.

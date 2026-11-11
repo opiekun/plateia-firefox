@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Plateia",
+  "name": "Plateia Community",
   "version": "0.9.4",
   "default_locale": "en",
   "description": "__MSG_descricao__",
@@ -100,20 +100,34 @@
     "https://web.kick.com/*"
   ],
   "background": {
-    "service_worker": "src/fundo.js",
     "scripts": [
       "src/fundo.js"
     ]
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "plateia@dredsgg",
+      "id": "{788d37b4-1de2-4279-9e50-d05347beaeec}",
       "strict_min_version": "140.0",
       "data_collection_permissions": {
         "required": [
-          "none"
+          "authenticationInfo",
+          "websiteContent"
         ]
       }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
     }
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icons/128.png"
+      ],
+      "matches": [
+        "https://www.twitch.tv/*",
+        "https://kick.com/*"
+      ]
+    }
+  ]
 }

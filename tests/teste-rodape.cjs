@@ -35,7 +35,7 @@ setTimeout(() => {
     ['tem "feito por Dreds · v' + manifest.version + '" com Dreds clicável', assina && assina.textContent === `feito por Dreds · v${manifest.version}` && assina.querySelector('a').getAttribute('href') === 'https://github.com/DredsGG' && assina.querySelector('a').getAttribute('target') === '_blank'],
     ['Relatar bug abre o cartão', caixa && caixa.style.display === ''],
     ['prévia mostra a versão e a sala', previa.includes('Plateia: v' + manifest.version) && previa.includes('Sala: Twitch')],
-    ['abre nos Issues do repo da Plateia', !!aberto && aberto.startsWith('https://github.com/DredsGG/plateia/issues/new?title=')],
+    ['abre nos Issues do repo da Plateia', !!aberto && aberto.startsWith('https://github.com/opiekun/plateia-firefox/issues/new?title=')],
     ['título com [Bug] e o texto', !!aberto && decodeURIComponent(aberto.split('&body=')[0]).includes('[Bug] A live entrou e saiu sozinha')],
     ['relato leva o texto, a versão e o diagnóstico', corpo.includes('A live entrou e saiu sozinha') && corpo.includes('v' + manifest.version) && corpo.includes('Canais na lista: 1')],
     ['relato NÃO leva token, login nem nome de canal', !/SEGREDO123|usuario_teste|canalsecreto/i.test(corpo + previa)],

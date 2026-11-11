@@ -8,11 +8,11 @@ let falhas = 0;
 const ok = (n, c, extra) => { console.log((c ? 'OK     ' : 'FALHOU ') + n + (!c && extra ? '\n       ' + extra : '')); if (!c) falhas++; };
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 
-function montar(release) {
+function montar(release, firefox = false) {
   const store = {}, ouv = { msg: [], alarm: [], startup: [], installed: [] }, alarmes = {}, pedidos = [];
   const ev = (k) => ({ addListener: (f) => ouv[k].push(f) });
   const chrome = {
-    runtime: { getManifest: () => manifest, getURL: (p) => 'chrome-extension://x/' + (p || ''), onMessage: ev('msg'), onStartup: ev('startup'), onInstalled: ev('installed'), reload() {}, requestUpdateCheck: async () => ({ status: 'no_update' }) },
+    runtime: { getManifest: () => manifest, getURL: (p) => (firefox ? 'moz-extension://x/' : 'chrome-extension://x/') + (p || ''), onMessage: ev('msg'), onStartup: ev('startup'), onInstalled: ev('installed'), reload() {}, requestUpdateCheck: async () => ({ status: 'no_update' }) },
     storage: { local: { get: async (k) => ({ [k]: store[k] && JSON.parse(JSON.stringify(store[k])) }), set: async (o) => Object.assign(store, JSON.parse(JSON.stringify(o))) } },
     alarms: { create: (n, o) => { alarmes[n] = o; }, onAlarm: ev('alarm') },
     tabs: { create: async () => ({}), query: async () => [], reload() {} },
@@ -33,6 +33,12 @@ function montar(release) {
 }
 
 (async () => {
+  const ff = montar(() => ({ tag_name: 'v9.9.9', name: 'URGENT', assets: [] }), true);
+  ff.store.atualizacao = { procuradoEm: Date.now(), disponivel: true, urgente: true, zip: 'https://example.com/upstream.zip' };
+  const ffState = await ff.mensagem({ cmd: 'procurarAtualizacao', seMaisVelhoQue: 600000 });
+  ok('Firefox: não consulta nem oferece atualizações do upstream', ff.pedidos.length === 0 && ffState.disponivel === false && ffState.urgente === false && !ffState.zip);
+  const ffApply = await ff.mensagem({ cmd: 'aplicarAtualizacao' });
+  ok('Firefox: não abre nem aplica atualização upstream antiga', ffApply.status === 'indisponivel');
   let rel = { tag_name: 'v9.9.9', name: 'v9.9.9', body: '- algo', assets: [{ name: 'plateia-v9.9.9.zip', browser_download_url: 'https://x/z.zip' }] };
   const f = montar(() => rel);
   for (const g of f.ouv.installed) await g({ reason: 'update', previousVersion: '0.8.0' });

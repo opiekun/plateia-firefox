@@ -41,6 +41,7 @@ const esc = (a) => a.w.document.dispatchEvent(new a.w.KeyboardEvent('keydown', {
   // 1) instalação nova: tutorial sozinho na página, sem abrir a sala
   const a = montar({ atualizacao: { instalacaoNova: true } });
   await espera(300);
+  ok('tutorial usa logo Firefox da extensão', !!a.quadro().querySelector('img[src$="/icons/128.png"]'));
   ok('instalação nova: tutorial aparece na página da Twitch', !!a.quadro() && /Como usar a sala da Twitch/.test(a.quadro().textContent) && !a.w.document.getElementById('plateia-sala'));
   ok('quadro solto: a página continua clicável (sem fundo escuro)', a.host().style.pointerEvents === 'none' && !!a.sr().querySelector('.app.solto') && a.quadro().getAttribute('aria-modal') === 'false');
   ok('botão Plateia continua na página', !!a.w.document.getElementById('plateia-lancador'));

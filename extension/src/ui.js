@@ -31,6 +31,7 @@
   };
   // logo da Plateia: tela roxa (Twitch) + tela verde (Kick) + plateia
   const logo = (tam = 20) => {
+    if (P.ext && P.ext.runtime && P.ext.runtime.getURL) return h('img', { src: P.ext.runtime.getURL('icons/128.png'), width: tam, height: tam, alt: '', style: 'object-fit:contain' });
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 128 128'); s.setAttribute('width', tam); s.setAttribute('height', tam);
     svgDe(s, '<rect x="4" y="4" width="120" height="120" rx="28" fill="#141417" stroke="#34343c" stroke-width="3"/>' +
@@ -453,7 +454,7 @@
   const notasEmItens = (txt) => String(txt || '').split(/\r?\n/).map((l) => l.trim())
     .filter((l) => /^[-*•]\s+/.test(l)).map((l) => l.replace(/^[-*•]\s+/, '').replace(/\*\*/g, '').replace(/`/g, '')).slice(0, 6);
   // ---------- Relatar bug (regra 9): relato nos Issues do repo, com versão e diagnóstico sem dado pessoal ----------
-  const REPO_ISSUES = 'https://github.com/DredsGG/plateia/issues/new';
+  const REPO_ISSUES = 'https://github.com/opiekun/plateia-firefox/issues/new';
   const svgBug = () => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('width', 13); s.setAttribute('height', 13); s.setAttribute('aria-hidden', 'true');
